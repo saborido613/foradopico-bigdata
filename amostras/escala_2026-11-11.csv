@@ -1,0 +1,29 @@
+data,empresa_id,time,funcionario_id,nome,email,linha_embarque,estacao_embarque,presencial,janela_entrada,data_coleta
+2026-11-11,EMP001,Financeiro,F001,Yasmin Souza,yasmin.souza.1@empresa-ficticia.com.br,1,Tucuruvi,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F002,Caio Lima,caio.lima.2@empresa-ficticia.com.br,1,Saúde,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F003,Hugo Oliveira,hugo.oliveira.3@empresa-ficticia.com.br,3,Palmeiras-Barra Funda,true,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F004,Diego Gomes,diego.gomes.4@empresa-ficticia.com.br,3,Palmeiras-Barra Funda,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F005,Samuel Souza,samuel.souza.5@empresa-ficticia.com.br,3,Tatuapé,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F006,Nicolas Silva,nicolas.silva.6@empresa-ficticia.com.br,1,Tucuruvi,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F007,Carla Santos,carla.santos.7@empresa-ficticia.com.br,1,Saúde,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F008,Rafaela Rodrigues,rafaela.rodrigues.8@empresa-ficticia.com.br,1,Tucuruvi,true,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F009,Samuel Santos,samuel.santos.9@empresa-ficticia.com.br,3,Palmeiras-Barra Funda,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F010,Yasmin Martins,yasmin.martins.10@empresa-ficticia.com.br,3,Penha,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F011,Nicolas Santos,nicolas.santos.11@empresa-ficticia.com.br,3,Artur Alvim,false,08:00,2026-11-11
+2026-11-11,EMP001,Financeiro,F012,Tatiane Lima,tatiane.lima.12@empresa-ficticia.com.br,1,Tucuruvi,true,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F013,Felipe Martins,felipe.martins.13@empresa-ficticia.com.br,3,Corinthians-Itaquera,true,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F014,Karina Lima,karina.lima.14@empresa-ficticia.com.br,1,Jabaquara,true,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F015,Gabriela Pereira,gabriela.pereira.15@empresa-ficticia.com.br,1,Santana,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F016,Carla Costa,carla.costa.16@empresa-ficticia.com.br,1,Santana,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F017,Lucas Pereira,lucas.pereira.17@empresa-ficticia.com.br,3,Tatuapé,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F018,Isabela Silva,isabela.silva.18@empresa-ficticia.com.br,3,Palmeiras-Barra Funda,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F019,Olivia Ferreira,olivia.ferreira.19@empresa-ficticia.com.br,1,Santana,true,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F020,Marina Souza,marina.souza.20@empresa-ficticia.com.br,3,Penha,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F021,Joao Gomes,joao.gomes.21@empresa-ficticia.com.br,3,Tatuapé,true,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F022,Lucas Rodrigues,lucas.rodrigues.22@empresa-ficticia.com.br,1,Saúde,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F023,Leticia Souza,leticia.souza.23@empresa-ficticia.com.br,1,Tucuruvi,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F024,Rodrigo Santos,rodrigo.santos.24@empresa-ficticia.com.br,1,Ana Rosa,true,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F025,Carla Santos,carla.santos.25@empresa-ficticia.com.br,1,Santana,true,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F026,Marina Lima,marina.lima.26@empresa-ficticia.com.br,3,Artur Alvim,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F027,Yasmin Pereira,yasmin.pereira.27@empresa-ficticia.com.br,1,Jabaquara,false,08:00,2026-11-11
+2026-11-11,EMP001,Tecnologia,F028,Lucas Pereira,lucas.pereira.28@empresa-ficticia.com.br,1,Saúde,false,08:00,2026-11-11

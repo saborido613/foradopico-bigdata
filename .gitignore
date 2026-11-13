@@ -1,0 +1,28 @@
+# Airflow local: senhas padrão, logs e configurações geradas
+.env
+docker-compose.yaml
+logs/
+config/
+plugins/
+
+# Dados coletados (só a pasta amostras/ vai para o repositório)
+chegada/
+
+# Evidências e arquivos de trabalho
+prints/
+*.zip
+
+# Segredos
+*salt*
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
