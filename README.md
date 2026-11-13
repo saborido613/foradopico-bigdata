@@ -11,10 +11,10 @@ Bronze, Prata e Ouro no Databricks, até as tabelas que o app lê.
 
 | Nome | RM |
 | --- | --- |
-| João Saborido | 98184 |
-| Matheus Haruo | 97663 |
+| João Pedro Saborido Silva | 98184 |
+| Matheus Haruo Queiroz Omori | 97663 |
 | Pedro Guerra de Souza Freitas | 99526 |
-| Victor Wittner | 98667 |
+| Victor Augusto Wittner | 98667 |
 
 ## Perguntas que o MVP responde
 
