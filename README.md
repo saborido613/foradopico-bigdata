@@ -23,6 +23,7 @@ Bronze, Prata e Ouro no Databricks, até as tabelas que o app lê.
 3. Em qual dia da semana é mais tranquilo ir ao escritório?
 4. Quanto o movimento cai em feriados, emendas e fins de semana?
 5. **Impacto:** quanto a escala sugerida tira os funcionários do pico, em relação à escala original da empresa?
+6. **Impacto com dados reais do RH:** a escala sugerida, montada a partir da planilha do RH (via robô RPA), melhora a escala que a empresa pratica hoje?
 
 ## Arquitetura
 
@@ -58,7 +59,7 @@ em lotes de dias de coleta diferentes.
 | [Open-Meteo](https://open-meteo.com/): temperatura e chuva por hora em São Paulo (CC BY 4.0) | Externa, API sem chave | JSON | Diária (DAG) | Chuva no horário de embarque |
 | [BrasilAPI](https://brasilapi.com.br/): feriados nacionais do ano | Externa, API sem chave | JSON | Diária (DAG) | Feriados e emendas |
 | Escala presencial da empresa | Interna, **simulada** (nomes e e-mails inventados) | CSV | Diária (DAG) | Escala original do RH |
-| Lotes do robô RPA (planilha do RH validada e pseudonimizada) | Interna | JSON | A cada planilha nova | Regras da escala da semana |
+| Lotes do robô RPA (planilha do RH validada e pseudonimizada, contrato v2) | Interna | JSON | A cada planilha nova (o robô roda a cada 5 min) | Demanda por time, restrições de cada pessoa e a escala atual da empresa |
 
 ## Estrutura do repositório
 
@@ -69,8 +70,9 @@ databricks/
   01_bronze.py              Auto Loader incremental e contagens
   02_prata.py               tipos, regras de qualidade, quarentena e MERGE
   03_ouro.py                dimensões, fatos, LGPD, as 5 consultas e as views do app
-  04_integracao_rpa.py      lotes do robô RPA
+  04_integracao_rpa.py      lotes do robô RPA: Bronze, Prata e Ouro da escala real e a consulta 6
 amostras/                   um arquivo de cada fonte, como chega na pasta chegada/
+  schedule/                 os dois lotes do robô RPA (semanas 2026-W47 e 2026-W48, dados fictícios)
 README.md
 ```
 
@@ -120,25 +122,44 @@ dia não chegou. As configurações ficam em Variables, nunca no código.
    com `etapa = 3_reexecucao`: as contagens não mudam.
 5. Rode o `02_prata` duas vezes: na segunda execução o MERGE mostra 0 inseridos e 0 atualizados.
 6. Rode o `03_ouro`.
-7. Para a integração com o RPA, envie os lotes JSON do robô para `chegada/schedule/` e rode o `04_integracao_rpa`.
+7. **Integração com o RPA:** rode a seção 0 do `04_integracao_rpa` (cria `chegada/schedule/`). Envie o lote
+   `schedule20261115_231049_e2b83ca3.json` (semana W47) e rode com `etapa = 1_lote_w47`. Depois envie o
+   `schedule20261115_231053_82222ec0.json` (W48) e rode com `etapa = 2_lote_w48`. Por fim, rode sem enviar nada com
+   `etapa = 3_reexecucao`: nada é inserido, atualizado ou removido.
 
 ## Camadas
 
 | Camada | Tabelas | O que faz |
 | --- | --- | --- |
-| Bronze | `bronze_demanda_metro`, `bronze_clima`, `bronze_feriados`, `bronze_escala` | Dado bruto com `arquivo_origem` e `carregado_em`. Auto Loader com checkpoint: só arquivos novos entram |
-| Prata | `prata_demanda_metro`, `prata_clima`, `prata_feriados`, `prata_escala`, `prata_estacao`, `prata_empresa` | Tipos corretos, nomes de estação padronizados, 9 regras de qualidade com quarentena e MERGE pela chave |
+| Bronze | `bronze_demanda_metro`, `bronze_clima`, `bronze_feriados`, `bronze_escala`, `bronze_schedule` | Dado bruto com `arquivo_origem` e `carregado_em`. Auto Loader com checkpoint: só arquivos novos entram |
+| Prata | `prata_demanda_metro`, `prata_clima`, `prata_feriados`, `prata_escala`, `prata_estacao`, `prata_empresa` | Tipos corretos, nomes de estação padronizados, 10 regras de qualidade com quarentena e MERGE pela chave |
+| Prata (RPA) | `prata_lote_escala`, `prata_demanda_time`, `prata_funcionario_semana`, `prata_escala_atual` | Lote vigente por semana, 12 regras de qualidade com quarentena (`quarentena_rpa`) e MERGE que substitui a semana quando o RH reenvia a planilha |
 | Ouro | `dim_data`, `dim_estacao`, `dim_faixa_horaria`, `dim_funcionario`, `fato_lotacao`, `ouro_lotacao_prevista`, `fato_viagem_escala` | Modelo dimensional, as 5 consultas e as views do app |
+| Ouro (RPA) | `fato_escala_rpa`, `ouro_aderencia_demanda_rpa`, `ouro_pendencias_escala_rpa` | Escala atual × escala sugerida, aderência à demanda do RH e a consulta 6 |
 
-**O que o app usa:** `vw_app_lotacao_prevista` (tela Lotação prevista) e `vw_app_minha_semana` (tela Minha semana).
-Nenhuma das duas tem nome, e-mail ou id do funcionário.
+**O que o app usa:** `vw_app_lotacao_prevista` (tela Lotação prevista), `vw_app_minha_semana` (tela Minha semana) e
+`vw_app_escala_rpa` (Minha semana com a escala real do RH). Nenhuma tem nome, e-mail ou matrícula.
+
+## Integração com o RPA
+
+O robô RPA lê a planilha do RH, valida e grava um lote JSON por planilha aceita em `chegada/schedule/`
+(contrato `landingZoneHandoff.md`, versão 2). O `04_integracao_rpa`:
+
+1. carrega cada lote **uma única vez** na Bronze (Auto Loader `binaryFile`, só `schedule*.json`, os `.tmp` são ignorados);
+2. interpreta o JSON com schema explícito (aceita as versões 1 e 2) e mantém o **lote vigente** de cada semana: se o RH
+   reenviar a planilha, o MERGE substitui a semana inteira;
+3. monta a **escala sugerida** respeitando o mínimo, o máximo e os dias obrigatórios de cada time, as datas
+   indisponíveis e o horário máximo de cada pessoa, os feriados da `dim_data` e a lotação prevista na estação de cada
+   um, com no máximo 40% do time na mesma janela;
+4. compara com a escala que a empresa pratica hoje (consulta 6).
 
 ## LGPD
 
 - Nome e e-mail existem só até a Prata. Na Ouro, o funcionário vira `funcionario_chave` (SHA-256 do id com um salt
   secreto, truncado), o nome vira `nome_mascarado` (só as iniciais) e o e-mail vira `email_hash`.
 - O salt é gerado na primeira execução e fica no volume `controle` do Databricks: não está no código nem neste repositório.
-- Os lotes do robô RPA já chegam pseudonimizados, sem nome nem e-mail.
+- Os lotes do robô chegam com o funcionário como `employeeRef` (SHA-256 da matrícula com o salt do robô): sem nome,
+  e-mail ou matrícula em nenhuma camada.
 - A escala usada nos testes é **fictícia**: nenhum dado pessoal real foi usado.
 
 ## Hipóteses e limitações
